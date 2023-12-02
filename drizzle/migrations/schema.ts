@@ -48,7 +48,13 @@ export const memberRole = pgEnum("memberRole", ["Admin", "Moderator", "Guest"]);
 
 export const member = pgTable("member", {
   id: serial("id").primaryKey(),
-  userId: integer("user_Id"),
+  userId: integer("user_id").references(() => profile.id),
+  conversationInitiated: integer("memberOne").references(
+    () => conversation.memberOne
+  ),
+  conversationReceived: integer("memberTwo").references(
+    () => conversation.memberTwo
+  ),
   role: memberRole("Guest"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -59,6 +65,8 @@ export const memberRelations = relations(member, ({ one, many }) => ({
     references: [profile.id],
   }),
   servers: many(server),
+  messages: many(message),
+  directMessages: many(directMessage),
 }));
 export const channelType = pgEnum("channelType", ["Text", "Audio", "Video"]);
 
@@ -66,7 +74,7 @@ export const channel = pgTable("channel", {
   id: serial("id").primaryKey(),
   name: text("name"),
   type: channelType("Text"),
-  userId: integer("user_Id"),
+  userId: integer("user_id").references(() => profile.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -79,4 +87,44 @@ export const channelRelations = relations(channel, ({ one, many }) => ({
     fields: [channel.userId],
     references: [server.id],
   }),
+  message: many(message),
 }));
+
+export const message = pgTable("message", {
+  id: serial("id").primaryKey(),
+  content: text("content"),
+  fileUrl: text("fileUrl"),
+  memberId: integer("member_id").references(() => member.id),
+  channelId: integer("channel_id").references(() => channel.id),
+  deleted: boolean("deleted").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const conversation = pgTable("conversation", {
+  id: serial("id").primaryKey(),
+  memberOne: serial("id").unique(),
+  memberTwo: serial("id").unique(),
+  content: text("content"),
+  fileUrl: text("fileUrl"),
+  deleted: boolean("deleted").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+export const conversationRelation = relations(
+  conversation,
+  ({ one, many }) => ({
+    directMessages: many(directMessage),
+  })
+);
+
+export const directMessage = pgTable("directMessage", {
+  id: serial("id").primaryKey(),
+  content: text("content"),
+  fileUrl: text("fileUrl"),
+  memberId: integer("member_id").references(() => member.id),
+  conversationId: integer("conversation_id").references(() => conversation.id),
+  deleted: boolean("deleted").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});

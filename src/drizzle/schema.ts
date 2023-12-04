@@ -11,15 +11,19 @@ import {
   date,
   pgEnum,
   uuid,
+  pgSchema,
 } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 
-export const profile = pgTable("profile", {
+export const mySchema = pgSchema("my_schema");
+
+export const profile = mySchema.table("profile", {
   id: serial("id").primaryKey(),
-  userId: integer("id").unique(),
-  name: text("name"),
-  imageUrl: text("imageUrl"),
+  userId: integer("user_id").unique(),
+  username: text("username").unique(),
   email: text("email"),
+  password: text("password"),
+  imageUrl: text("imageUrl"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -30,12 +34,12 @@ export const profileRelations = relations(profile, ({ many }) => ({
   channel: many(channel),
 }));
 
-export const server = pgTable("server", {
+export const server = mySchema.table("server", {
   id: serial("id").primaryKey(),
   name: text("name"),
   imageUrl: text("imageUrl"),
   inviteCode: text("inviteCode"),
-  userId: integer("id").references(() => profile.id),
+  userId: integer("user_id").references(() => profile.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -46,7 +50,7 @@ export const serverRelations = relations(server, ({ many }) => ({
 
 export const memberRole = pgEnum("memberRole", ["Admin", "Moderator", "Guest"]);
 
-export const member = pgTable("member", {
+export const member = mySchema.table("member", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => profile.id),
   conversationInitiated: integer("memberOne").references(
@@ -70,7 +74,7 @@ export const memberRelations = relations(member, ({ one, many }) => ({
 }));
 export const channelType = pgEnum("channelType", ["Text", "Audio", "Video"]);
 
-export const channel = pgTable("channel", {
+export const channel = mySchema.table("channel", {
   id: serial("id").primaryKey(),
   name: text("name"),
   type: channelType("Text"),
@@ -90,7 +94,7 @@ export const channelRelations = relations(channel, ({ one, many }) => ({
   message: many(message),
 }));
 
-export const message = pgTable("message", {
+export const message = mySchema.table("message", {
   id: serial("id").primaryKey(),
   content: text("content"),
   fileUrl: text("fileUrl"),
@@ -101,10 +105,10 @@ export const message = pgTable("message", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const conversation = pgTable("conversation", {
+export const conversation = mySchema.table("conversation", {
   id: serial("id").primaryKey(),
-  memberOne: serial("id").unique(),
-  memberTwo: serial("id").unique(),
+  memberOne: serial("memberOne_id").unique(),
+  memberTwo: serial("memeberTwo_id").unique(),
   content: text("content"),
   fileUrl: text("fileUrl"),
   deleted: boolean("deleted").default(false),
@@ -118,7 +122,7 @@ export const conversationRelation = relations(
   })
 );
 
-export const directMessage = pgTable("directMessage", {
+export const directMessage = mySchema.table("directMessage", {
   id: serial("id").primaryKey(),
   content: text("content"),
   fileUrl: text("fileUrl"),

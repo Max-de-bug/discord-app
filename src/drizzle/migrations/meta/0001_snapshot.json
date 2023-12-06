@@ -1,12 +1,12 @@
 {
-  "id": "86b609aa-f5cd-4502-aec5-a9a77d5bb20f",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "abe304e1-edda-4951-aa8f-e382519a823d",
+  "prevId": "2afbfbe9-8736-485f-a61d-2b877058c622",
   "version": "5",
   "dialect": "pg",
   "tables": {
     "channel": {
       "name": "channel",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -68,7 +68,7 @@
     },
     "conversation": {
       "name": "conversation",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -82,8 +82,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "memeberTwo_id": {
-          "name": "memeberTwo_id",
+        "memberTwo_id": {
+          "name": "memberTwo_id",
           "type": "serial",
           "primaryKey": false,
           "notNull": true
@@ -125,26 +125,11 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "conversation_memberOne_id_unique": {
-          "name": "conversation_memberOne_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "memberOne_id"
-          ]
-        },
-        "conversation_memeberTwo_id_unique": {
-          "name": "conversation_memeberTwo_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "memeberTwo_id"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     },
     "directMessage": {
       "name": "directMessage",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -232,7 +217,7 @@
     },
     "member": {
       "name": "member",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -242,18 +227,6 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "memberOne": {
-          "name": "memberOne",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "memberTwo": {
-          "name": "memberTwo",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -293,29 +266,52 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "members_to_server": {
+      "name": "members_to_server",
+      "schema": "",
+      "columns": {
+        "member_id": {
+          "name": "member_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         },
-        "member_memberOne_conversation_memberOne_id_fk": {
-          "name": "member_memberOne_conversation_memberOne_id_fk",
-          "tableFrom": "member",
-          "tableTo": "conversation",
+        "server_id": {
+          "name": "server_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "members_to_server_member_id_member_id_fk": {
+          "name": "members_to_server_member_id_member_id_fk",
+          "tableFrom": "members_to_server",
+          "tableTo": "member",
           "columnsFrom": [
-            "memberOne"
+            "member_id"
           ],
           "columnsTo": [
-            "memberOne_id"
+            "id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "member_memberTwo_conversation_memeberTwo_id_fk": {
-          "name": "member_memberTwo_conversation_memeberTwo_id_fk",
-          "tableFrom": "member",
-          "tableTo": "conversation",
+        "members_to_server_server_id_server_id_fk": {
+          "name": "members_to_server_server_id_server_id_fk",
+          "tableFrom": "members_to_server",
+          "tableTo": "server",
           "columnsFrom": [
-            "memberTwo"
+            "server_id"
           ],
           "columnsTo": [
-            "memeberTwo_id"
+            "id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -326,7 +322,7 @@
     },
     "message": {
       "name": "message",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -414,7 +410,7 @@
     },
     "profile": {
       "name": "profile",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -489,7 +485,7 @@
     },
     "server": {
       "name": "server",
-      "schema": "my_schema",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -574,12 +570,12 @@
       }
     }
   },
-  "schemas": {
-    "my_schema": "my_schema"
-  },
+  "schemas": {},
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"conversation\".\"memeberTwo_id\"": "\"conversation\".\"memberTwo_id\""
+    }
   }
 }

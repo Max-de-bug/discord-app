@@ -1,24 +1,125 @@
 {
-  "id": "00000000-0000-0000-0000-000000000000",
-  "prevId": "",
+  "id": "2afbfbe9-8736-485f-a61d-2b877058c622",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "pg_stat_statements_info": {
-      "name": "pg_stat_statements_info",
+    "channel": {
+      "name": "channel",
       "schema": "",
       "columns": {
-        "dealloc": {
-          "name": "dealloc",
-          "type": "bigint",
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "stats_reset": {
-          "name": "stats_reset",
-          "type": "timestamp with time zone",
+        "Text": {
+          "name": "Text",
+          "type": "channelType",
           "primaryKey": false,
           "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "channel_user_id_profile_id_fk": {
+          "name": "channel_user_id_profile_id_fk",
+          "tableFrom": "channel",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "conversation": {
+      "name": "conversation",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "memberOne_id": {
+          "name": "memberOne_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "memeberTwo_id": {
+          "name": "memeberTwo_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fileUrl": {
+          "name": "fileUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted": {
+          "name": "deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -26,276 +127,449 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "pg_stat_statements": {
-      "name": "pg_stat_statements",
+    "directMessage": {
+      "name": "directMessage",
       "schema": "",
       "columns": {
-        "userid": {
-          "name": "userid",
-          "type": "oid",
-          "primaryKey": false,
-          "notNull": false
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
-        "dbid": {
-          "name": "dbid",
-          "type": "oid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "toplevel": {
-          "name": "toplevel",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "queryid": {
-          "name": "queryid",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "query": {
-          "name": "query",
+        "content": {
+          "name": "content",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "plans": {
-          "name": "plans",
-          "type": "bigint",
+        "fileUrl": {
+          "name": "fileUrl",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "total_plan_time": {
-          "name": "total_plan_time",
-          "type": "double precision",
+        "member_id": {
+          "name": "member_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "min_plan_time": {
-          "name": "min_plan_time",
-          "type": "double precision",
+        "conversation_id": {
+          "name": "conversation_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "max_plan_time": {
-          "name": "max_plan_time",
-          "type": "double precision",
+        "deleted": {
+          "name": "deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "directMessage_member_id_member_id_fk": {
+          "name": "directMessage_member_id_member_id_fk",
+          "tableFrom": "directMessage",
+          "tableTo": "member",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "directMessage_conversation_id_conversation_id_fk": {
+          "name": "directMessage_conversation_id_conversation_id_fk",
+          "tableFrom": "directMessage",
+          "tableTo": "conversation",
+          "columnsFrom": [
+            "conversation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "member": {
+      "name": "member",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "mean_plan_time": {
-          "name": "mean_plan_time",
-          "type": "double precision",
+        "Guest": {
+          "name": "Guest",
+          "type": "memberRole",
           "primaryKey": false,
           "notNull": false
         },
-        "stddev_plan_time": {
-          "name": "stddev_plan_time",
-          "type": "double precision",
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "member_user_id_profile_id_fk": {
+          "name": "member_user_id_profile_id_fk",
+          "tableFrom": "member",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "members_to_server": {
+      "name": "members_to_server",
+      "schema": "",
+      "columns": {
+        "member_id": {
+          "name": "member_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "server_id": {
+          "name": "server_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "members_to_server_member_id_member_id_fk": {
+          "name": "members_to_server_member_id_member_id_fk",
+          "tableFrom": "members_to_server",
+          "tableTo": "member",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "members_to_server_server_id_server_id_fk": {
+          "name": "members_to_server_server_id_server_id_fk",
+          "tableFrom": "members_to_server",
+          "tableTo": "server",
+          "columnsFrom": [
+            "server_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "message": {
+      "name": "message",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "calls": {
-          "name": "calls",
-          "type": "bigint",
+        "fileUrl": {
+          "name": "fileUrl",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "total_exec_time": {
-          "name": "total_exec_time",
-          "type": "double precision",
+        "member_id": {
+          "name": "member_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "min_exec_time": {
-          "name": "min_exec_time",
-          "type": "double precision",
+        "channel_id": {
+          "name": "channel_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "max_exec_time": {
-          "name": "max_exec_time",
-          "type": "double precision",
+        "deleted": {
+          "name": "deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "message_member_id_member_id_fk": {
+          "name": "message_member_id_member_id_fk",
+          "tableFrom": "message",
+          "tableTo": "member",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "message_channel_id_channel_id_fk": {
+          "name": "message_channel_id_channel_id_fk",
+          "tableFrom": "message",
+          "tableTo": "channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "profile": {
+      "name": "profile",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "mean_exec_time": {
-          "name": "mean_exec_time",
-          "type": "double precision",
+        "username": {
+          "name": "username",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "stddev_exec_time": {
-          "name": "stddev_exec_time",
-          "type": "double precision",
+        "email": {
+          "name": "email",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "rows": {
-          "name": "rows",
-          "type": "bigint",
+        "password": {
+          "name": "password",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "shared_blks_hit": {
-          "name": "shared_blks_hit",
-          "type": "bigint",
+        "imageUrl": {
+          "name": "imageUrl",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "shared_blks_read": {
-          "name": "shared_blks_read",
-          "type": "bigint",
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "now()"
         },
-        "shared_blks_dirtied": {
-          "name": "shared_blks_dirtied",
-          "type": "bigint",
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
-        },
-        "shared_blks_written": {
-          "name": "shared_blks_written",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "local_blks_hit": {
-          "name": "local_blks_hit",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "local_blks_read": {
-          "name": "local_blks_read",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "local_blks_dirtied": {
-          "name": "local_blks_dirtied",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "local_blks_written": {
-          "name": "local_blks_written",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "temp_blks_read": {
-          "name": "temp_blks_read",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "temp_blks_written": {
-          "name": "temp_blks_written",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "blk_read_time": {
-          "name": "blk_read_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "blk_write_time": {
-          "name": "blk_write_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "temp_blk_read_time": {
-          "name": "temp_blk_read_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "temp_blk_write_time": {
-          "name": "temp_blk_write_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "wal_records": {
-          "name": "wal_records",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "wal_fpi": {
-          "name": "wal_fpi",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "wal_bytes": {
-          "name": "wal_bytes",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_functions": {
-          "name": "jit_functions",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_generation_time": {
-          "name": "jit_generation_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_inlining_count": {
-          "name": "jit_inlining_count",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_inlining_time": {
-          "name": "jit_inlining_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_optimization_count": {
-          "name": "jit_optimization_count",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_optimization_time": {
-          "name": "jit_optimization_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_emission_count": {
-          "name": "jit_emission_count",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "jit_emission_time": {
-          "name": "jit_emission_time",
-          "type": "double precision",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "profile_user_id_unique": {
+          "name": "profile_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        },
+        "profile_username_unique": {
+          "name": "profile_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      }
+    },
+    "server": {
+      "name": "server",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "imageUrl": {
+          "name": "imageUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inviteCode": {
+          "name": "inviteCode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "server_user_id_profile_id_fk": {
+          "name": "server_user_id_profile_id_fk",
+          "tableFrom": "server",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "channelType": {
+      "name": "channelType",
+      "values": {
+        "Text": "Text",
+        "Audio": "Audio",
+        "Video": "Video"
+      }
+    },
+    "memberRole": {
+      "name": "memberRole",
+      "values": {
+        "Admin": "Admin",
+        "Moderator": "Moderator",
+        "Guest": "Guest"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "schemas": {},

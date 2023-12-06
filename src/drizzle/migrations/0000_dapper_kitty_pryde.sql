@@ -1,5 +1,3 @@
-CREATE SCHEMA "my_schema";
---> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "channelType" AS ENUM('Text', 'Audio', 'Video');
 EXCEPTION
@@ -12,7 +10,7 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."channel" (
+CREATE TABLE IF NOT EXISTS "channel" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text,
 	"Text" "channelType",
@@ -21,7 +19,7 @@ CREATE TABLE IF NOT EXISTS "my_schema"."channel" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."conversation" (
+CREATE TABLE IF NOT EXISTS "conversation" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"memberOne_id" serial NOT NULL,
 	"memeberTwo_id" serial NOT NULL,
@@ -29,12 +27,10 @@ CREATE TABLE IF NOT EXISTS "my_schema"."conversation" (
 	"fileUrl" text,
 	"deleted" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "conversation_memberOne_id_unique" UNIQUE("memberOne_id"),
-	CONSTRAINT "conversation_memeberTwo_id_unique" UNIQUE("memeberTwo_id")
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."directMessage" (
+CREATE TABLE IF NOT EXISTS "directMessage" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"content" text,
 	"fileUrl" text,
@@ -45,17 +41,20 @@ CREATE TABLE IF NOT EXISTS "my_schema"."directMessage" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."member" (
+CREATE TABLE IF NOT EXISTS "member" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer,
-	"memberOne" integer,
-	"memberTwo" integer,
 	"Guest" "memberRole",
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."message" (
+CREATE TABLE IF NOT EXISTS "members_to_server" (
+	"member_id" integer NOT NULL,
+	"server_id" integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "message" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"content" text,
 	"fileUrl" text,
@@ -66,7 +65,7 @@ CREATE TABLE IF NOT EXISTS "my_schema"."message" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."profile" (
+CREATE TABLE IF NOT EXISTS "profile" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer,
 	"username" text,
@@ -79,7 +78,7 @@ CREATE TABLE IF NOT EXISTS "my_schema"."profile" (
 	CONSTRAINT "profile_username_unique" UNIQUE("username")
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "my_schema"."server" (
+CREATE TABLE IF NOT EXISTS "server" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text,
 	"imageUrl" text,
@@ -89,58 +88,56 @@ CREATE TABLE IF NOT EXISTS "my_schema"."server" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-DROP TABLE "pg_stat_statements_info";--> statement-breakpoint
-DROP TABLE "pg_stat_statements";--> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."channel" ADD CONSTRAINT "channel_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "my_schema"."profile"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "channel" ADD CONSTRAINT "channel_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."directMessage" ADD CONSTRAINT "directMessage_member_id_member_id_fk" FOREIGN KEY ("member_id") REFERENCES "my_schema"."member"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "directMessage" ADD CONSTRAINT "directMessage_member_id_member_id_fk" FOREIGN KEY ("member_id") REFERENCES "member"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."directMessage" ADD CONSTRAINT "directMessage_conversation_id_conversation_id_fk" FOREIGN KEY ("conversation_id") REFERENCES "my_schema"."conversation"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "directMessage" ADD CONSTRAINT "directMessage_conversation_id_conversation_id_fk" FOREIGN KEY ("conversation_id") REFERENCES "conversation"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."member" ADD CONSTRAINT "member_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "my_schema"."profile"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "member" ADD CONSTRAINT "member_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."member" ADD CONSTRAINT "member_memberOne_conversation_memberOne_id_fk" FOREIGN KEY ("memberOne") REFERENCES "my_schema"."conversation"("memberOne_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "members_to_server" ADD CONSTRAINT "members_to_server_member_id_member_id_fk" FOREIGN KEY ("member_id") REFERENCES "member"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."member" ADD CONSTRAINT "member_memberTwo_conversation_memeberTwo_id_fk" FOREIGN KEY ("memberTwo") REFERENCES "my_schema"."conversation"("memeberTwo_id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "members_to_server" ADD CONSTRAINT "members_to_server_server_id_server_id_fk" FOREIGN KEY ("server_id") REFERENCES "server"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."message" ADD CONSTRAINT "message_member_id_member_id_fk" FOREIGN KEY ("member_id") REFERENCES "my_schema"."member"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "message" ADD CONSTRAINT "message_member_id_member_id_fk" FOREIGN KEY ("member_id") REFERENCES "member"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."message" ADD CONSTRAINT "message_channel_id_channel_id_fk" FOREIGN KEY ("channel_id") REFERENCES "my_schema"."channel"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "message" ADD CONSTRAINT "message_channel_id_channel_id_fk" FOREIGN KEY ("channel_id") REFERENCES "channel"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "my_schema"."server" ADD CONSTRAINT "server_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "my_schema"."profile"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "server" ADD CONSTRAINT "server_user_id_profile_id_fk" FOREIGN KEY ("user_id") REFERENCES "profile"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

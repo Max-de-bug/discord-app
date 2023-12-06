@@ -10,7 +10,8 @@
     "watch": "ts watch -r dotenv/config index.ts",
     "introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
     "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
-    "migrate": "tsx -r dotenv/config migrate.ts"
+    "migrate": "tsx -r dotenv/config migrate.ts",
+    "studio": "drizzle-kit studio --port 3333 --config=drizzle.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -23,12 +24,14 @@
     "lucide-react": "^0.294.0",
     "next": "14.0.3",
     "nookies": "^2.5.2",
+    "pg": "^8.11.3",
     "postgres": "^3.4.3",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.48.2",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.6.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {

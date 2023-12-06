@@ -1,0 +1,1 @@
+ALTER TABLE "conversation" RENAME COLUMN "memeberTwo_id" TO "memberTwo_id";

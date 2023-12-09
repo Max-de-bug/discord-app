@@ -2,6 +2,7 @@
   "name": "discord-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +12,10 @@
     "introspect": "drizzle-kit introspect:pg --config=drizzle.config.ts",
     "generate": "drizzle-kit generate:pg --config=drizzle.config.ts",
     "migrate": "tsx -r dotenv/config migrate.ts",
-    "studio": "drizzle-kit studio --port 3333 --config=drizzle.config.ts"
+    "studio": "drizzle-kit studio --port 3333 --config=drizzle.config.ts",
+    "server": "ts-node server/server.js",
+    "devserver": "nodemon server/server.js",
+    "fastify": "fastify server/server.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -21,6 +25,10 @@
     "clsx": "^2.0.0",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.29.1",
+    "fastify": "^4.24.3",
+    "fastify-autoload": "^3.13.0",
+    "fastify-swagger": "^5.2.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.294.0",
     "next": "14.0.3",
     "nookies": "^2.5.2",
@@ -31,6 +39,7 @@
     "react-hook-form": "^7.48.2",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
+    "ts-node": "^10.9.1",
     "tsx": "^4.6.2",
     "zod": "^3.22.4"
   },
@@ -42,6 +51,7 @@
     "drizzle-kit": "^0.20.6",
     "eslint": "^8",
     "eslint-config-next": "14.0.3",
+    "nodemon": "^3.0.2",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"

@@ -1,7 +1,8 @@
 import { db } from "@/drizzle/client";
-import { profile } from "@/drizzle/schema";
+import { message, profile } from "@/drizzle/schema";
 import { eq, lt } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { hash } from "bcrypt";
 
 export async function POST(req: Request) {
   try {
@@ -38,14 +39,22 @@ export async function POST(req: Request) {
         { status: 409 }
       );
     }
+
+    const hashedPassword = await hash(password, 10);
     const newUser = db
       .insert(profile)
       .values({
         username: username,
         email: email,
-        password: password,
+        password: hashedPassword,
       })
       .returning();
-    return NextResponse.json(body);
+    return NextResponse.json(
+      {
+        user: newUser,
+        message: "User created successfully",
+      },
+      { status: 201 }
+    );
   } catch (error) {}
 }

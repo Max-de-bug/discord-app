@@ -17,8 +17,11 @@ import Link from "next/link";
 import GoogleSignInButton from "../ui/GoogleSignInButton";
 import { cn } from "@/lib/utils";
 import { SignUpformSchema } from "@/app/lib/types";
-
+import { redirect } from "next/navigation";
+import { useContext } from "react";
+import { AuthContext } from "@/app/context/AuthContext";
 const SignUpForm = () => {
+  const context = useContext(AuthContext);
   const form = useForm<z.infer<typeof SignUpformSchema>>({
     resolver: zodResolver(SignUpformSchema),
     defaultValues: {
@@ -29,8 +32,20 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof SignUpformSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof SignUpformSchema>) => {
+    let response = await fetch("/api/user/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(values),
+    });
+    if (!response.ok) {
+      throw new Error("Something went wrong");
+    }
+    let result = await response.json();
+    context.login(result);
+    redirect("/");
   };
 
   return (

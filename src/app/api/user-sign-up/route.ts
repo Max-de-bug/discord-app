@@ -14,6 +14,7 @@ export async function POST(req: Request) {
 
     const existingUserByEmail = await db.query.profile.findFirst({
       columns: {
+        //@ts-ignore
         email: email,
       },
     });
@@ -29,6 +30,7 @@ export async function POST(req: Request) {
     }
     const existingUserByUsername = await db.query.profile.findFirst({
       columns: {
+        //@ts-ignore
         username: username,
       },
     });
@@ -59,10 +61,6 @@ export async function POST(req: Request) {
         createdAt: profile.createdAt,
         updatedAt: profile.updatedAt,
       });
-
-    // const serCuredentials = await db.query.profile.findFirst({
-    //   columns: username,
-    // });
 
     const jwtToken = jwt.sign({ userData: newUser }, process.env.JWT_SECRET!, {
       expiresIn: "30d",

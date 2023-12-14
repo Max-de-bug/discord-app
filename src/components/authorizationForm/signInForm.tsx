@@ -16,24 +16,34 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import GoogleSignInButton from "../ui/GoogleSignInButton";
 import { cn } from "@/lib/utils";
-import { SignUpformSchema } from "@/app/lib/types";
-import { redirect } from "next/navigation";
+import { SignInformSchema } from "@/app/lib/types";
+import { signIn } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
 import { useContext } from "react";
 import { AuthContext } from "@/app/context/AuthContext";
-const SignUpForm = () => {
+
+const SignInForm = () => {
   const context = useContext(AuthContext);
-  const form = useForm<z.infer<typeof SignUpformSchema>>({
-    resolver: zodResolver(SignUpformSchema),
+  const router = useRouter();
+  const form = useForm<z.infer<typeof SignInformSchema>>({
+    resolver: zodResolver(SignInformSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof SignUpformSchema>) => {
-    let response = await fetch("/api/user/", {
+  const onSubmit = async (values: z.infer<typeof SignInformSchema>) => {
+    // const signInData = await signIn("credentials", {
+    //   email: values.email,
+    //   password: values.password,
+    // });
+    // if (signInData?.error) {
+    //   console.log(signInData.error);
+    // } else {
+    //   router.push("/");
+    // }
+    let response = await fetch("/api/user-sign-in/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
@@ -55,19 +65,6 @@ const SignUpForm = () => {
           Welcome back!
         </h2>
         <div className="space-y-2">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="mail@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="email"
@@ -98,25 +95,6 @@ const SignUpForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">
-                  Re-Enter your password
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Re-Enter your password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
         <Button
           className={cn("w-full mt-6", {
@@ -134,11 +112,11 @@ const SignUpForm = () => {
       <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
       <p className="text-center text-sm text-gray-600 mt-2">
         If you don&apos;t have an account, please&nbsp;
-        <Link className="text-blue-500 hover:underline" href="/sign-in">
-          Sign in
+        <Link className="text-blue-500 hover:underline" href="/sign-up">
+          Sign up
         </Link>
       </p>
     </Form>
   );
 };
-export default SignUpForm;
+export default SignInForm;
